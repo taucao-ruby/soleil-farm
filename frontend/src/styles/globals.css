@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Soleil Farm Global Styles
+ * =========================
+ * CSS Variables cho shadcn/ui components
+ * Design System: Agricultural theme with green/amber/earth tones
+ */
+
+@layer base {
+  :root {
+    /* ===== Background & Foreground ===== */
+    --background: 0 0% 100%;
+    --foreground: 142 32% 8%;
+
+    /* ===== Card ===== */
+    --card: 0 0% 100%;
+    --card-foreground: 142 32% 8%;
+
+    /* ===== Popover ===== */
+    --popover: 0 0% 100%;
+    --popover-foreground: 142 32% 8%;
+
+    /* ===== Primary (Farm Green - Lá xanh) ===== */
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    /* ===== Secondary (Earth Amber - Vàng đất) ===== */
+    --secondary: 38 92% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* ===== Muted ===== */
+    --muted: 142 20% 95%;
+    --muted-foreground: 142 10% 40%;
+
+    /* ===== Accent ===== */
+    --accent: 142 30% 94%;
+    --accent-foreground: 142 32% 8%;
+
+    /* ===== Destructive (Error Red) ===== */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* ===== Border & Input ===== */
+    --border: 142 20% 90%;
+    --input: 142 20% 90%;
+    --ring: 142 71% 45%;
+
+    /* ===== Border Radius ===== */
+    --radius: 0.5rem;
+
+    /* ===== Chart Colors (for Recharts) ===== */
+    --chart-1: 142 71% 45%; /* Green */
+    --chart-2: 38 92% 50%;  /* Amber */
+    --chart-3: 199 89% 48%; /* Water Blue */
+    --chart-4: 25 95% 53%;  /* Orange */
+    --chart-5: 262 83% 58%; /* Purple */
+  }
+
+  /* ===== Dark Mode ===== */
+  .dark {
+    --background: 142 32% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 142 32% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 142 32% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 38 92% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 142 20% 15%;
+    --muted-foreground: 142 10% 60%;
+
+    --accent: 142 30% 15%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 142 20% 18%;
+    --input: 142 20% 18%;
+    --ring: 142 71% 45%;
+  }
+}
+
+@layer base {
+  /* ===== Reset & Base Styles ===== */
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  /* ===== Typography (Vietnamese-friendly) ===== */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  h4 {
+    @apply text-lg md:text-xl;
+  }
+
+  /* ===== Focus Styles (Accessibility) ===== */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* ===== Selection ===== */
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+
+  /* ===== Scrollbar Styles (Webkit) ===== */
+  ::-webkit-scrollbar {
+    @apply h-2 w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/50 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full hover:bg-muted-foreground/50;
+  }
+}
+
+@layer utilities {
+  /* ===== Custom Utilities ===== */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-in {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  /* ===== Container Query Support ===== */
+  @supports (container-type: inline-size) {
+    .container-query {
+      container-type: inline-size;
+    }
+  }
+}

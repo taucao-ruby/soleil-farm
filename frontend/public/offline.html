@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10b981">
+  <title>Soleil Farm - Offline</title>
+  <link rel="icon" type="image/svg+xml" href="/vite.svg">
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --gray-100: #f3f4f6;
+      --gray-500: #6b7280;
+      --gray-900: #111827;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 16px;
+      opacity: 0.9;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: white;
+      color: var(--gray-900);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--gray-900);
+    }
+
+    .tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      text-align: left;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .tip:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .tip-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--gray-100);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .tip-text {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+
+    .tip-text strong {
+      display: block;
+      color: var(--gray-900);
+      margin-bottom: 2px;
+    }
+
+    .retry-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      color: var(--primary);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 24px;
+    }
+
+    .retry-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .retry-btn:active {
+      transform: translateY(0);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fbbf24;
+      animation: blink 1.5s infinite;
+    }
+
+    .status-dot.online {
+      background: #34d399;
+      animation: none;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 12px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📡</div>
+    <h1>Không có kết nối mạng</h1>
+    <p>Vui lòng kiểm tra kết nối Internet của bạn và thử lại.</p>
+    
+    <button class="retry-btn" onclick="location.reload()">
+      🔄 Thử lại
+    </button>
+
+    <div class="card">
+      <h2>💡 Mẹo sử dụng offline</h2>
+      
+      <div class="tip">
+        <div class="tip-icon">📱</div>
+        <div class="tip-text">
+          <strong>Cài đặt ứng dụng</strong>
+          Cài Soleil Farm để truy cập nhanh hơn và sử dụng offline.
+        </div>
+      </div>
+      
+      <div class="tip">
+        <div class="tip-icon">💾</div>
+        <div class="tip-text">
+          <strong>Dữ liệu được lưu</strong>
+          Các thay đổi của bạn được lưu cục bộ và sẽ đồng bộ khi có mạng.
+        </div>
+      </div>
+      
+      <div class="tip">
+        <div class="tip-icon">🔄</div>
+        <div class="tip-text">
+          <strong>Tự động đồng bộ</strong>
+          Khi có mạng trở lại, ứng dụng sẽ tự động đồng bộ dữ liệu.
+        </div>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Đang chờ kết nối...</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    Soleil Farm © 2026
+  </div>
+
+  <script>
+    // Check online status
+    function updateStatus() {
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      
+      if (navigator.onLine) {
+        dot.classList.add('online');
+        text.textContent = 'Đã có kết nối! Đang tải lại...';
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      } else {
+        dot.classList.remove('online');
+        text.textContent = 'Đang chờ kết nối...';
+      }
+    }
+
+    // Listen for online/offline events
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    
+    // Initial check
+    updateStatus();
+  </script>
+</body>
+</html>

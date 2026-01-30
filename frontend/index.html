@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="Soleil Farm - Hệ thống quản lý trang trại thông minh" />
+    <meta name="theme-color" content="#10b981" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Soleil Farm" />
+    <meta name="application-name" content="Soleil Farm" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-TileColor" content="#16a34a" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    
+    <!-- Preconnect to important origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Font loading -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#16a34a" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <title>Soleil Farm - Quản lý trang trại</title>
+    
+    <!-- Safe area CSS variables for notched devices -->
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top);
+        --sar: env(safe-area-inset-right);
+        --sab: env(safe-area-inset-bottom);
+        --sal: env(safe-area-inset-left);
+      }
+      
+      /* Safe area utility classes */
+      .safe-area-top { padding-top: env(safe-area-inset-top); }
+      .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+      .safe-area-left { padding-left: env(safe-area-inset-left); }
+      .safe-area-right { padding-right: env(safe-area-inset-right); }
+      .pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+      .pt-safe { padding-top: max(1rem, env(safe-area-inset-top)); }
+      
+      /* Hide scrollbar for horizontal scroll containers */
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      /* Prevent text selection on touch */
+      .touch-none { touch-action: none; }
+      
+      /* Prevent pull-to-refresh on mobile browsers */
+      html, body {
+        overscroll-behavior-y: contain;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker is registered via main.tsx for better control -->
+    <!-- PWA: vite-plugin-pwa handles service worker generation and registration -->
+  </body>
+</html>

@@ -1,0 +1,161 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from '@storybook/blocks';
+import { colors, typography, spacing } from './tokens';
+
+<Meta title="Design System/Introduction" />
+
+# Soleil Farm Design System
+
+Chào mừng bạn đến với Soleil Farm Design System - hệ thống thiết kế toàn diện được xây dựng cho nền tảng quản lý trang trại Soleil Farm.
+
+## 🌱 Design Philosophy
+
+Design system này được xây dựng dựa trên các nguyên tắc:
+
+1. **Farm-First**: Màu sắc và icons lấy cảm hứng từ nông nghiệp
+2. **Accessibility**: WCAG 2.1 AA compliant
+3. **Mobile-First**: Responsive design cho mọi thiết bị
+4. **Vietnamese-Optimized**: Typography tối ưu cho tiếng Việt
+
+## 🎨 Color Palette
+
+### Primary (Farm Green)
+Màu xanh lá - biểu tượng của sự sống, mùa màng bội thu.
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="Farm Green"
+    colors={{
+      '50': '#f0fdf4',
+      '100': '#dcfce7',
+      '500': '#10b981',
+      '700': '#047857',
+      '900': '#064e3b',
+    }}
+  />
+</ColorPalette>
+
+### Earth Tones
+Màu đất - biểu tượng của đất đai màu mỡ.
+
+<ColorPalette>
+  <ColorItem
+    title="Earth"
+    subtitle="Amber/Brown"
+    colors={{
+      '50': '#fef3c7',
+      '500': '#d97706',
+      '900': '#451a03',
+    }}
+  />
+</ColorPalette>
+
+### Status Colors
+Màu trạng thái cho các entity trong hệ thống.
+
+<ColorPalette>
+  <ColorItem
+    title="Land Parcel Status"
+    colors={{
+      'Available': '#10b981',
+      'In Use': '#3b82f6',
+      'Resting': '#f59e0b',
+      'Maintenance': '#ef4444',
+    }}
+  />
+  <ColorItem
+    title="Crop Cycle Status"
+    colors={{
+      'Planned': '#6366f1',
+      'Active': '#10b981',
+      'Completed': '#64748b',
+      'Failed': '#ef4444',
+    }}
+  />
+</ColorPalette>
+
+## 📝 Typography
+
+<Typeset
+  fontSizes={[12, 14, 16, 18, 20, 24, 30, 36]}
+  fontWeight={400}
+  sampleText="Soleil Farm - Nền tảng quản lý trang trại thông minh"
+  fontFamily="Inter, system-ui, sans-serif"
+/>
+
+### Font Scale
+- **xs**: 12px - Captions, helper text
+- **sm**: 14px - Body small, labels
+- **base**: 16px - Body text
+- **lg**: 18px - Lead text
+- **xl**: 20px - Heading small
+- **2xl**: 24px - Heading medium
+- **3xl**: 30px - Heading large
+
+## 📏 Spacing Scale
+
+Hệ thống spacing dựa trên base unit 4px:
+
+| Token | Value | Pixels |
+|-------|-------|--------|
+| 1 | 0.25rem | 4px |
+| 2 | 0.5rem | 8px |
+| 3 | 0.75rem | 12px |
+| 4 | 1rem | 16px |
+| 6 | 1.5rem | 24px |
+| 8 | 2rem | 32px |
+| 12 | 3rem | 48px |
+
+## 🧱 Components
+
+Explore các components trong sidebar:
+
+- **Button**: Primary actions, với nhiều variants
+- **StatusBadge**: Hiển thị trạng thái với màu semantic
+- **StatCard**: Cards thống kê với trend indicators
+- **FormField**: Form field wrapper với validation
+- **Input**: Text inputs với icons và addons
+- **Card**: Content containers
+- **Modal**: Dialogs và popups
+
+## 🎭 Icons
+
+Custom farm icons được thiết kế riêng cho Soleil Farm:
+
+- **FertilizerIcon**: Bón phân
+- **HarvestIcon**: Thu hoạch
+- **IrrigationIcon**: Tưới tiêu
+- **SeedlingIcon**: Gieo hạt
+- **PestControlIcon**: Kiểm soát sâu bệnh
+- ... và nhiều hơn nữa
+
+## ♿ Accessibility
+
+Design system tuân thủ:
+
+- WCAG 2.1 Level AA
+- Full keyboard navigation
+- Screen reader support
+- Reduced motion preferences
+- Focus management
+
+## 🚀 Getting Started
+
+```tsx
+// Import từ design system
+import { 
+  Button, 
+  StatusBadge, 
+  StatCard,
+  useHotkeys 
+} from '@/design-system';
+
+// Sử dụng components
+<Button variant="primary" leftIcon={<Plus />}>
+  Tạo lô đất mới
+</Button>
+
+<StatusBadge status="active" animateDot>
+  Đang hoạt động
+</StatusBadge>
+```
