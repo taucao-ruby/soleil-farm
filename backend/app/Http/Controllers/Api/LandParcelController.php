@@ -18,19 +18,74 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LandParcelController extends Controller
 {
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
-        $query = LandParcel::with('areaUnit');
+        $query = LandParcel::query()->with(['areaUnit', 'waterSources']);
+
+        // Filtering
+        if ($request->has('status')) {
+            $query->where('current_status', $request->status);
+        }
+
+        if ($request->has('soil_type')) {
+            $query->where('soil_type', $request->soil_type);
+        }
 
         if ($request->has('land_type')) {
             $query->where('land_type', $request->land_type);
         }
 
-        if ($request->boolean('active_only', true)) {
+        if ($request->has('terrain_type')) {
+            $query->where('terrain_type', $request->terrain_type);
+        }
+
+        if ($request->has('is_active')) {
+            $query->where('is_active', $request->boolean('is_active'));
+        } elseif ($request->boolean('active_only', true)) {
             $query->where('is_active', true);
         }
 
-        return LandParcelResource::collection($query->get());
+        // Search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('code', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $allowedSortFields = ['name', 'code', 'area_value', 'land_type', 'soil_type', 'created_at', 'updated_at'];
+        
+        if (in_array($sortBy, $allowedSortFields)) {
+            $query->orderBy($sortBy, $sortOrder === 'asc' ? 'asc' : 'desc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // Pagination
+        $parcels = $query->paginate($this->getPerPage($request));
+
+        return response()->json([
+            'data' => LandParcelResource::collection($parcels->items()),
+            'meta' => [
+                'current_page' => $parcels->currentPage(),
+                'last_page' => $parcels->lastPage(),
+                'per_page' => $parcels->perPage(),
+                'total' => $parcels->total(),
+                'from' => $parcels->firstItem(),
+                'to' => $parcels->lastItem(),
+            ],
+            'links' => [
+                'first' => $parcels->url(1),
+                'last' => $parcels->url($parcels->lastPage()),
+                'prev' => $parcels->previousPageUrl(),
+                'next' => $parcels->nextPageUrl(),
+            ],
+        ]);
     }
 
     public function store(StoreLandParcelRequest $request): LandParcelResource

@@ -23,25 +23,80 @@ class CropCycleController extends Controller
         protected CropCycleService $cropCycleService
     ) {}
 
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
-        $query = CropCycle::with(['landParcel', 'cropType', 'season', 'yieldUnit']);
+        $query = CropCycle::query()
+            ->with(['landParcel', 'cropType', 'season', 'yieldUnit', 'stages']);
 
+        // Filter by status
         if ($request->has('status')) {
             $query->where('status', $request->status);
         }
 
+        // Filter by land parcel
         if ($request->has('land_parcel_id')) {
             $query->where('land_parcel_id', $request->land_parcel_id);
         }
 
+        // Filter by crop type
         if ($request->has('crop_type_id')) {
             $query->where('crop_type_id', $request->crop_type_id);
         }
 
-        return CropCycleResource::collection(
-            $query->orderBy('planned_start_date', 'desc')->get()
-        );
+        // Filter by season
+        if ($request->has('season_id')) {
+            $query->where('season_id', $request->season_id);
+        }
+
+        // Filter by date range
+        if ($request->has('start_date')) {
+            $query->where('planned_start_date', '>=', $request->start_date);
+        }
+
+        if ($request->has('end_date')) {
+            $query->where('planned_end_date', '<=', $request->end_date);
+        }
+
+        // Search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('cycle_code', 'like', "%{$search}%")
+                  ->orWhere('notes', 'like', "%{$search}%");
+            });
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'planned_start_date');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $allowedSortFields = ['cycle_code', 'status', 'planned_start_date', 'planned_end_date', 'actual_start_date', 'actual_end_date', 'yield_value', 'created_at'];
+        
+        if (in_array($sortBy, $allowedSortFields)) {
+            $query->orderBy($sortBy, $sortOrder === 'asc' ? 'asc' : 'desc');
+        } else {
+            $query->orderBy('planned_start_date', 'desc');
+        }
+
+        // Pagination
+        $cycles = $query->paginate($this->getPerPage($request));
+
+        return response()->json([
+            'data' => CropCycleResource::collection($cycles->items()),
+            'meta' => [
+                'current_page' => $cycles->currentPage(),
+                'last_page' => $cycles->lastPage(),
+                'per_page' => $cycles->perPage(),
+                'total' => $cycles->total(),
+                'from' => $cycles->firstItem(),
+                'to' => $cycles->lastItem(),
+            ],
+            'links' => [
+                'first' => $cycles->url(1),
+                'last' => $cycles->url($cycles->lastPage()),
+                'prev' => $cycles->previousPageUrl(),
+                'next' => $cycles->nextPageUrl(),
+            ],
+        ]);
     }
 
     public function store(StoreCropCycleRequest $request): JsonResponse

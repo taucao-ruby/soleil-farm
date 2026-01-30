@@ -128,13 +128,13 @@ class ActivityTypeFactory extends Factory
             [
                 'name' => 'Kiểm tra đồng ruộng',
                 'code' => 'KIEM_TRA',
-                'category' => 'monitoring',
+                'category' => 'observation',
                 'description' => 'Kiểm tra tình trạng cây trồng, sâu bệnh',
             ],
             [
                 'name' => 'Bảo trì thiết bị',
                 'code' => 'BAO_TRI',
-                'category' => 'equipment',
+                'category' => 'other',
                 'description' => 'Bảo trì, sửa chữa máy móc thiết bị',
             ],
         ];

@@ -30,14 +30,15 @@ class CropTypeFactory extends Factory
      */
     public function definition(): array
     {
+        // Valid enum categories from migration: grain, vegetable, fruit, legume, tuber, herb, flower, fodder, other
         $crops = [
-            // Lương thực
+            // Lương thực (grain)
             [
                 'name' => 'Lúa',
                 'code' => 'LUA',
                 'scientific_name' => 'Oryza sativa',
                 'variety' => fake()->randomElement(['IR50404', 'OM5451', 'Jasmine 85', 'ST24', 'ST25']),
-                'category' => 'cereals',
+                'category' => 'grain',
                 'description' => 'Cây lúa nước - cây lương thực chính của Việt Nam',
                 'typical_grow_duration_days' => fake()->numberBetween(90, 120),
             ],
@@ -46,17 +47,17 @@ class CropTypeFactory extends Factory
                 'code' => 'NGO',
                 'scientific_name' => 'Zea mays',
                 'variety' => fake()->randomElement(['LVN10', 'LVN4', 'NK66', 'CP888']),
-                'category' => 'cereals',
+                'category' => 'grain',
                 'description' => 'Cây ngô - lương thực và thức ăn chăn nuôi',
                 'typical_grow_duration_days' => fake()->numberBetween(80, 100),
             ],
-            // Rau củ
+            // Rau củ (vegetable)
             [
                 'name' => 'Cà chua',
                 'code' => 'CA_CHUA',
                 'scientific_name' => 'Solanum lycopersicum',
                 'variety' => fake()->randomElement(['Anna', 'Savior', 'TN52', 'Kim Cương']),
-                'category' => 'vegetables',
+                'category' => 'vegetable',
                 'description' => 'Cà chua - rau ăn quả phổ biến',
                 'typical_grow_duration_days' => fake()->numberBetween(90, 110),
             ],
@@ -65,7 +66,7 @@ class CropTypeFactory extends Factory
                 'code' => 'RAU_CAI',
                 'scientific_name' => 'Brassica rapa',
                 'variety' => fake()->randomElement(['Cải ngọt', 'Cải xanh', 'Cải thìa', 'Cải bẹ xanh']),
-                'category' => 'vegetables',
+                'category' => 'vegetable',
                 'description' => 'Rau cải - rau ăn lá ngắn ngày',
                 'typical_grow_duration_days' => fake()->numberBetween(25, 35),
             ],
@@ -74,7 +75,7 @@ class CropTypeFactory extends Factory
                 'code' => 'RAU_MUONG',
                 'scientific_name' => 'Ipomoea aquatica',
                 'variety' => fake()->randomElement(['Rau muống nước', 'Rau muống cạn']),
-                'category' => 'vegetables',
+                'category' => 'vegetable',
                 'description' => 'Rau muống - rau ăn lá phổ biến nhất Việt Nam',
                 'typical_grow_duration_days' => fake()->numberBetween(20, 30),
             ],
@@ -83,17 +84,17 @@ class CropTypeFactory extends Factory
                 'code' => 'DUA_LEO',
                 'scientific_name' => 'Cucumis sativus',
                 'variety' => fake()->randomElement(['Dưa leo Baby', 'Dưa leo Nhật', 'Dưa leo trắng']),
-                'category' => 'vegetables',
+                'category' => 'vegetable',
                 'description' => 'Dưa leo - rau ăn quả giàu nước',
                 'typical_grow_duration_days' => fake()->numberBetween(45, 60),
             ],
-            // Trái cây
+            // Trái cây (fruit)
             [
                 'name' => 'Dưa hấu',
                 'code' => 'DUA_HAU',
                 'scientific_name' => 'Citrullus lanatus',
                 'variety' => fake()->randomElement(['Dưa hấu không hạt', 'Dưa hấu Hắc Mỹ Nhân', 'Dưa hấu Phù Đổng']),
-                'category' => 'fruits',
+                'category' => 'fruit',
                 'description' => 'Dưa hấu - trái cây mùa hè phổ biến',
                 'typical_grow_duration_days' => fake()->numberBetween(75, 90),
             ],
@@ -102,26 +103,27 @@ class CropTypeFactory extends Factory
                 'code' => 'THANH_LONG',
                 'scientific_name' => 'Hylocereus undatus',
                 'variety' => fake()->randomElement(['Thanh long ruột trắng', 'Thanh long ruột đỏ', 'Thanh long vàng']),
-                'category' => 'fruits',
+                'category' => 'fruit',
                 'description' => 'Thanh long - trái cây xuất khẩu chủ lực',
                 'typical_grow_duration_days' => fake()->numberBetween(180, 365),
             ],
-            // Cây công nghiệp
+            // Cây đậu (legume)
             [
                 'name' => 'Đậu phộng',
                 'code' => 'DAU_PHONG',
                 'scientific_name' => 'Arachis hypogaea',
                 'variety' => fake()->randomElement(['L14', 'L23', 'TK10', 'Sen lai']),
-                'category' => 'industrial_crops',
+                'category' => 'legume',
                 'description' => 'Đậu phộng - cây lấy dầu và thực phẩm',
                 'typical_grow_duration_days' => fake()->numberBetween(90, 120),
             ],
+            // Cây khác (other)
             [
                 'name' => 'Mía',
                 'code' => 'MIA',
                 'scientific_name' => 'Saccharum officinarum',
                 'variety' => fake()->randomElement(['ROC10', 'K84-200', 'VN84-4137', 'Suphanburi 7']),
-                'category' => 'industrial_crops',
+                'category' => 'other',
                 'description' => 'Mía - nguyên liệu sản xuất đường',
                 'typical_grow_duration_days' => fake()->numberBetween(300, 365),
             ],
@@ -152,7 +154,7 @@ class CropTypeFactory extends Factory
             'code' => 'LUA_' . fake()->unique()->numerify('###'),
             'scientific_name' => 'Oryza sativa',
             'variety' => fake()->randomElement(['IR50404', 'OM5451', 'Jasmine 85', 'ST24', 'ST25']),
-            'category' => 'cereals',
+            'category' => 'grain',
             'description' => 'Cây lúa nước - cây lương thực chính của Việt Nam',
             'typical_grow_duration_days' => fake()->numberBetween(90, 120),
         ]);
@@ -174,7 +176,7 @@ class CropTypeFactory extends Factory
             'name' => $veg['name'],
             'code' => $veg['code'] . '_' . fake()->unique()->numerify('###'),
             'scientific_name' => $veg['scientific_name'],
-            'category' => 'vegetables',
+            'category' => 'vegetable',
             'typical_grow_duration_days' => $veg['duration'],
         ]);
     }
@@ -189,7 +191,7 @@ class CropTypeFactory extends Factory
             'code' => 'DUA_HAU_' . fake()->unique()->numerify('###'),
             'scientific_name' => 'Citrullus lanatus',
             'variety' => fake()->randomElement(['Dưa hấu không hạt', 'Dưa hấu Hắc Mỹ Nhân']),
-            'category' => 'fruits',
+            'category' => 'fruit',
             'description' => 'Dưa hấu - trái cây mùa hè phổ biến',
             'typical_grow_duration_days' => 80,
         ]);
