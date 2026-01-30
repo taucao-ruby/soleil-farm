@@ -56,6 +56,13 @@ export function ProtectedRoute({
     }
   }, [location.pathname, isAuthenticated, checkInactivity]);
 
+  // Save intended path when not authenticated
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      setIntendedPath(location.pathname + location.search);
+    }
+  }, [isInitialized, isAuthenticated, location.pathname, location.search, setIntendedPath]);
+
   // Show loading while initializing
   if (!isInitialized) {
     return fallback || <AuthLoadingScreen />;
@@ -63,9 +70,6 @@ export function ProtectedRoute({
 
   // Not authenticated - redirect to login
   if (!isAuthenticated) {
-    // Save the intended destination
-    setIntendedPath(location.pathname + location.search);
-
     return (
       <Navigate
         to="/dang-nhap"

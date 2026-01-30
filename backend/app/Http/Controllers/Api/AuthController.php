@@ -71,9 +71,11 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'created_at' => $user->created_at,
                 ],
-                'token' => $tokenResult->plainTextToken,
-                'token_type' => 'Bearer',
-                'expires_at' => now()->addMinutes(self::TOKEN_EXPIRATION_MINUTES)->toISOString(),
+                'tokens' => [
+                    'token' => $tokenResult->plainTextToken,
+                    'token_type' => 'Bearer',
+                    'expires_at' => now()->addMinutes(self::TOKEN_EXPIRATION_MINUTES)->toISOString(),
+                ],
             ],
         ]);
     }
@@ -186,9 +188,11 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'created_at' => $user->created_at,
                 ],
-                'token' => $tokenResult->plainTextToken,
-                'token_type' => 'Bearer',
-                'expires_at' => now()->addMinutes(self::TOKEN_EXPIRATION_MINUTES)->toISOString(),
+                'tokens' => [
+                    'token' => $tokenResult->plainTextToken,
+                    'token_type' => 'Bearer',
+                    'expires_at' => now()->addMinutes(self::TOKEN_EXPIRATION_MINUTES)->toISOString(),
+                ],
             ],
         ], 201);
     }
