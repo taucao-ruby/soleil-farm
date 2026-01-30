@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LandParcel\AttachWaterSourceRequest;
+use App\Http\Requests\LandParcel\StoreLandParcelRequest;
+use App\Http\Requests\LandParcel\UpdateLandParcelRequest;
 use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\CropCycleResource;
 use App\Http\Resources\LandParcelResource;
@@ -30,21 +33,9 @@ class LandParcelController extends Controller
         return LandParcelResource::collection($query->get());
     }
 
-    public function store(Request $request): LandParcelResource
+    public function store(StoreLandParcelRequest $request): LandParcelResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'code' => 'required|string|max:30|unique:land_parcels,code',
-            'description' => 'nullable|string',
-            'land_type' => 'required|in:rice_field,garden,fish_pond,mixed,fallow,other',
-            'area_value' => 'required|numeric|min:0',
-            'area_unit_id' => 'required|exists:units_of_measure,id',
-            'terrain_type' => 'nullable|in:flat,sloped,terraced,lowland',
-            'soil_type' => 'nullable|in:clay,sandy,loamy,alluvial,mixed',
-            'latitude' => 'nullable|numeric|min:-90|max:90',
-            'longitude' => 'nullable|numeric|min:-180|max:180',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $landParcel = LandParcel::create($validated);
         $landParcel->load('areaUnit');
@@ -59,21 +50,9 @@ class LandParcelController extends Controller
         return new LandParcelResource($landParcel);
     }
 
-    public function update(Request $request, LandParcel $landParcel): LandParcelResource
+    public function update(UpdateLandParcelRequest $request, LandParcel $landParcel): LandParcelResource
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:100',
-            'code' => 'sometimes|string|max:30|unique:land_parcels,code,' . $landParcel->id,
-            'description' => 'nullable|string',
-            'land_type' => 'sometimes|in:rice_field,garden,fish_pond,mixed,fallow,other',
-            'area_value' => 'sometimes|numeric|min:0',
-            'area_unit_id' => 'sometimes|exists:units_of_measure,id',
-            'terrain_type' => 'nullable|in:flat,sloped,terraced,lowland',
-            'soil_type' => 'nullable|in:clay,sandy,loamy,alluvial,mixed',
-            'latitude' => 'nullable|numeric|min:-90|max:90',
-            'longitude' => 'nullable|numeric|min:-180|max:180',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $landParcel->update($validated);
         $landParcel->load('areaUnit');
@@ -99,18 +78,13 @@ class LandParcelController extends Controller
         return WaterSourceResource::collection($landParcel->waterSources);
     }
 
-    public function attachWaterSource(Request $request, LandParcel $landParcel): JsonResponse
+    public function attachWaterSource(AttachWaterSourceRequest $request, LandParcel $landParcel): JsonResponse
     {
-        $validated = $request->validate([
-            'water_source_id' => 'required|exists:water_sources,id',
-            'accessibility' => 'nullable|in:direct,pumped,gravity_fed,manual',
-            'is_primary_source' => 'nullable|boolean',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         // Check if already attached
         if ($landParcel->waterSources()->where('water_source_id', $validated['water_source_id'])->exists()) {
-            return response()->json(['message' => 'Water source already attached.'], 422);
+            return response()->json(['message' => 'Nguồn nước đã được gắn với lô đất này.'], 422);
         }
 
         $landParcel->waterSources()->attach($validated['water_source_id'], [
@@ -119,7 +93,7 @@ class LandParcelController extends Controller
             'notes' => $validated['notes'] ?? null,
         ]);
 
-        return response()->json(['message' => 'Water source attached successfully.']);
+        return response()->json(['message' => 'Đã gắn nguồn nước thành công.']);
     }
 
     public function detachWaterSource(LandParcel $landParcel, int $waterSource): JsonResponse

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WaterSource\StoreWaterSourceRequest;
+use App\Http\Requests\WaterSource\UpdateWaterSourceRequest;
 use App\Http\Resources\LandParcelResource;
 use App\Http\Resources\WaterSourceResource;
 use App\Models\WaterSource;
@@ -27,19 +29,9 @@ class WaterSourceController extends Controller
         return WaterSourceResource::collection($query->get());
     }
 
-    public function store(Request $request): WaterSourceResource
+    public function store(StoreWaterSourceRequest $request): WaterSourceResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'code' => 'required|string|max:30|unique:water_sources,code',
-            'source_type' => 'required|in:well,river,stream,pond,irrigation_canal,rainwater,municipal',
-            'description' => 'nullable|string',
-            'latitude' => 'nullable|numeric|min:-90|max:90',
-            'longitude' => 'nullable|numeric|min:-180|max:180',
-            'reliability' => 'nullable|in:permanent,seasonal,intermittent',
-            'water_quality' => 'nullable|in:excellent,good,fair,poor',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $waterSource = WaterSource::create($validated);
 
@@ -51,19 +43,9 @@ class WaterSourceController extends Controller
         return new WaterSourceResource($waterSource);
     }
 
-    public function update(Request $request, WaterSource $waterSource): WaterSourceResource
+    public function update(UpdateWaterSourceRequest $request, WaterSource $waterSource): WaterSourceResource
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:100',
-            'code' => 'sometimes|string|max:30|unique:water_sources,code,' . $waterSource->id,
-            'source_type' => 'sometimes|in:well,river,stream,pond,irrigation_canal,rainwater,municipal',
-            'description' => 'nullable|string',
-            'latitude' => 'nullable|numeric|min:-90|max:90',
-            'longitude' => 'nullable|numeric|min:-180|max:180',
-            'reliability' => 'nullable|in:permanent,seasonal,intermittent',
-            'water_quality' => 'nullable|in:excellent,good,fair,poor',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $waterSource->update($validated);
 

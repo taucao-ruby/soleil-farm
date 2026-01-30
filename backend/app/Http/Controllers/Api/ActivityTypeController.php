@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ActivityType\StoreActivityTypeRequest;
+use App\Http\Requests\ActivityType\UpdateActivityTypeRequest;
 use App\Http\Resources\ActivityTypeResource;
 use App\Models\ActivityType;
 use Illuminate\Http\JsonResponse;
@@ -26,15 +28,9 @@ class ActivityTypeController extends Controller
         return ActivityTypeResource::collection($query->get());
     }
 
-    public function store(Request $request): ActivityTypeResource
+    public function store(StoreActivityTypeRequest $request): ActivityTypeResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'code' => 'required|string|max:30|unique:activity_types,code',
-            'category' => 'required|in:land_preparation,planting,irrigation,fertilizing,pest_control,harvesting,maintenance,observation,other',
-            'description' => 'nullable|string',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $activityType = ActivityType::create($validated);
 
@@ -46,15 +42,9 @@ class ActivityTypeController extends Controller
         return new ActivityTypeResource($activityType);
     }
 
-    public function update(Request $request, ActivityType $activityType): ActivityTypeResource
+    public function update(UpdateActivityTypeRequest $request, ActivityType $activityType): ActivityTypeResource
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:100',
-            'code' => 'sometimes|string|max:30|unique:activity_types,code,' . $activityType->id,
-            'category' => 'sometimes|in:land_preparation,planting,irrigation,fertilizing,pest_control,harvesting,maintenance,observation,other',
-            'description' => 'nullable|string',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $activityType->update($validated);
 

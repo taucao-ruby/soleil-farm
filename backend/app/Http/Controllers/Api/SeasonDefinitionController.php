@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SeasonDefinition\StoreSeasonDefinitionRequest;
+use App\Http\Requests\SeasonDefinition\UpdateSeasonDefinitionRequest;
 use App\Http\Resources\SeasonDefinitionResource;
 use App\Models\SeasonDefinition;
 use Illuminate\Http\JsonResponse;
@@ -22,16 +24,9 @@ class SeasonDefinitionController extends Controller
         return SeasonDefinitionResource::collection($query->get());
     }
 
-    public function store(Request $request): SeasonDefinitionResource
+    public function store(StoreSeasonDefinitionRequest $request): SeasonDefinitionResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'code' => 'required|string|max:20|unique:season_definitions,code',
-            'description' => 'nullable|string',
-            'typical_start_month' => 'required|integer|min:1|max:12',
-            'typical_end_month' => 'required|integer|min:1|max:12',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $seasonDefinition = SeasonDefinition::create($validated);
 
@@ -43,16 +38,9 @@ class SeasonDefinitionController extends Controller
         return new SeasonDefinitionResource($seasonDefinition);
     }
 
-    public function update(Request $request, SeasonDefinition $seasonDefinition): SeasonDefinitionResource
+    public function update(UpdateSeasonDefinitionRequest $request, SeasonDefinition $seasonDefinition): SeasonDefinitionResource
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:100',
-            'code' => 'sometimes|string|max:20|unique:season_definitions,code,' . $seasonDefinition->id,
-            'description' => 'nullable|string',
-            'typical_start_month' => 'sometimes|integer|min:1|max:12',
-            'typical_end_month' => 'sometimes|integer|min:1|max:12',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $seasonDefinition->update($validated);
 

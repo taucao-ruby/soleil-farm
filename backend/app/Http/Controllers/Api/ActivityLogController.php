@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ActivityLog\StoreActivityLogRequest;
+use App\Http\Requests\ActivityLog\UpdateActivityLogRequest;
 use App\Http\Resources\ActivityLogResource;
 use App\Models\ActivityLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -39,24 +42,9 @@ class ActivityLogController extends Controller
         );
     }
 
-    public function store(Request $request): ActivityLogResource
+    public function store(StoreActivityLogRequest $request): ActivityLogResource
     {
-        $validated = $request->validate([
-            'activity_type_id' => 'required|exists:activity_types,id',
-            'crop_cycle_id' => 'nullable|exists:crop_cycles,id',
-            'land_parcel_id' => 'nullable|exists:land_parcels,id',
-            'water_source_id' => 'nullable|exists:water_sources,id',
-            'activity_date' => 'required|date',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i|after:start_time',
-            'description' => 'nullable|string',
-            'quantity_value' => 'nullable|numeric|min:0',
-            'quantity_unit_id' => 'nullable|exists:units_of_measure,id',
-            'cost_value' => 'nullable|numeric|min:0',
-            'cost_unit_id' => 'nullable|exists:units_of_measure,id',
-            'performed_by' => 'nullable|string|max:100',
-            'weather_conditions' => 'nullable|string|max:100',
-        ]);
+        $validated = $request->validated();
 
         $activityLog = ActivityLog::create($validated);
         $activityLog->load(['activityType', 'cropCycle', 'landParcel']);
@@ -69,6 +57,23 @@ class ActivityLogController extends Controller
         $activityLog->load(['activityType', 'cropCycle', 'landParcel', 'waterSource', 'quantityUnit', 'costUnit']);
 
         return new ActivityLogResource($activityLog);
+    }
+
+    public function update(UpdateActivityLogRequest $request, ActivityLog $activityLog): ActivityLogResource
+    {
+        $validated = $request->validated();
+
+        $activityLog->update($validated);
+        $activityLog->load(['activityType', 'cropCycle', 'landParcel']);
+
+        return new ActivityLogResource($activityLog);
+    }
+
+    public function destroy(ActivityLog $activityLog): JsonResponse
+    {
+        $activityLog->delete();
+
+        return response()->json(['message' => 'Đã xóa nhật ký hoạt động thành công.']);
     }
 
     public function byDate(string $date): AnonymousResourceCollection

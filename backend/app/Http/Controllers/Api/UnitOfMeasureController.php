@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UnitOfMeasure\StoreUnitOfMeasureRequest;
+use App\Http\Requests\UnitOfMeasure\UpdateUnitOfMeasureRequest;
 use App\Http\Resources\UnitOfMeasureResource;
 use App\Models\UnitOfMeasure;
 use Illuminate\Http\JsonResponse;
@@ -26,16 +28,9 @@ class UnitOfMeasureController extends Controller
         return UnitOfMeasureResource::collection($query->get());
     }
 
-    public function store(Request $request): UnitOfMeasureResource
+    public function store(StoreUnitOfMeasureRequest $request): UnitOfMeasureResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:50',
-            'abbreviation' => 'required|string|max:20',
-            'unit_type' => 'required|in:area,weight,volume,quantity,currency,time',
-            'conversion_factor_to_base' => 'nullable|numeric|min:0',
-            'is_base_unit' => 'nullable|boolean',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $unit = UnitOfMeasure::create($validated);
 
@@ -47,16 +42,9 @@ class UnitOfMeasureController extends Controller
         return new UnitOfMeasureResource($unitOfMeasure);
     }
 
-    public function update(Request $request, UnitOfMeasure $unitOfMeasure): UnitOfMeasureResource
+    public function update(UpdateUnitOfMeasureRequest $request, UnitOfMeasure $unitOfMeasure): UnitOfMeasureResource
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:50',
-            'abbreviation' => 'sometimes|string|max:20',
-            'unit_type' => 'sometimes|in:area,weight,volume,quantity,currency,time',
-            'conversion_factor_to_base' => 'nullable|numeric|min:0',
-            'is_base_unit' => 'nullable|boolean',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $unitOfMeasure->update($validated);
 

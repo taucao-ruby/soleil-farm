@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CropType\StoreCropTypeRequest;
+use App\Http\Requests\CropType\UpdateCropTypeRequest;
 use App\Http\Resources\CropTypeResource;
 use App\Models\CropType;
 use Illuminate\Http\JsonResponse;
@@ -26,19 +28,9 @@ class CropTypeController extends Controller
         return CropTypeResource::collection($query->get());
     }
 
-    public function store(Request $request): CropTypeResource
+    public function store(StoreCropTypeRequest $request): CropTypeResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'code' => 'required|string|max:30|unique:crop_types,code',
-            'scientific_name' => 'nullable|string|max:150',
-            'variety' => 'nullable|string|max:100',
-            'category' => 'required|in:grain,vegetable,fruit,legume,tuber,herb,flower,fodder,other',
-            'description' => 'nullable|string',
-            'typical_grow_duration_days' => 'nullable|integer|min:1',
-            'default_yield_unit_id' => 'nullable|exists:units_of_measure,id',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $cropType = CropType::create($validated);
         $cropType->load('defaultYieldUnit');
@@ -53,19 +45,9 @@ class CropTypeController extends Controller
         return new CropTypeResource($cropType);
     }
 
-    public function update(Request $request, CropType $cropType): CropTypeResource
+    public function update(UpdateCropTypeRequest $request, CropType $cropType): CropTypeResource
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:100',
-            'code' => 'sometimes|string|max:30|unique:crop_types,code,' . $cropType->id,
-            'scientific_name' => 'nullable|string|max:150',
-            'variety' => 'nullable|string|max:100',
-            'category' => 'sometimes|in:grain,vegetable,fruit,legume,tuber,herb,flower,fodder,other',
-            'description' => 'nullable|string',
-            'typical_grow_duration_days' => 'nullable|integer|min:1',
-            'default_yield_unit_id' => 'nullable|exists:units_of_measure,id',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $cropType->update($validated);
         $cropType->load('defaultYieldUnit');

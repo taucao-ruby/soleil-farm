@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\InvalidStatusTransitionException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CropCycle\CompleteCropCycleRequest;
+use App\Http\Requests\CropCycle\FailCropCycleRequest;
+use App\Http\Requests\CropCycle\StoreCropCycleRequest;
+use App\Http\Requests\CropCycle\UpdateCropCycleRequest;
 use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\CropCycleResource;
 use App\Models\CropCycle;
@@ -40,27 +44,9 @@ class CropCycleController extends Controller
         );
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreCropCycleRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'land_parcel_id' => 'required|exists:land_parcels,id',
-            'crop_type_id' => 'required|exists:crop_types,id',
-            'season_id' => 'nullable|exists:seasons,id',
-            'planned_start_date' => 'required|date',
-            'planned_end_date' => 'required|date|after:planned_start_date',
-            'notes' => 'nullable|string',
-        ]);
-
-        // Check for overlapping cycles
-        if ($this->cropCycleService->hasOverlappingCycle(
-            $validated['land_parcel_id'],
-            $validated['planned_start_date'],
-            $validated['planned_end_date']
-        )) {
-            return response()->json([
-                'message' => 'This land parcel already has an overlapping crop cycle for the specified dates.'
-            ], 422);
-        }
+        $validated = $request->validated();
 
         $landParcel = LandParcel::find($validated['land_parcel_id']);
         $year = date('Y', strtotime($validated['planned_start_date']));
@@ -83,37 +69,9 @@ class CropCycleController extends Controller
         return new CropCycleResource($cropCycle);
     }
 
-    public function update(Request $request, CropCycle $cropCycle): JsonResponse
+    public function update(UpdateCropCycleRequest $request, CropCycle $cropCycle): JsonResponse
     {
-        if (!in_array($cropCycle->status, ['planned', 'active'])) {
-            return response()->json([
-                'message' => 'Cannot update a completed, failed, or abandoned crop cycle.'
-            ], 422);
-        }
-
-        $validated = $request->validate([
-            'season_id' => 'nullable|exists:seasons,id',
-            'planned_start_date' => 'sometimes|date',
-            'planned_end_date' => 'sometimes|date|after:planned_start_date',
-            'notes' => 'nullable|string',
-        ]);
-
-        // Check for overlapping if dates changed
-        if (isset($validated['planned_start_date']) || isset($validated['planned_end_date'])) {
-            $startDate = $validated['planned_start_date'] ?? $cropCycle->planned_start_date->toDateString();
-            $endDate = $validated['planned_end_date'] ?? $cropCycle->planned_end_date->toDateString();
-
-            if ($this->cropCycleService->hasOverlappingCycle(
-                $cropCycle->land_parcel_id,
-                $startDate,
-                $endDate,
-                $cropCycle->id
-            )) {
-                return response()->json([
-                    'message' => 'The updated dates would overlap with another crop cycle.'
-                ], 422);
-            }
-        }
+        $validated = $request->validated();
 
         $cropCycle->update($validated);
         $cropCycle->load(['landParcel', 'cropType', 'season']);
@@ -146,13 +104,9 @@ class CropCycleController extends Controller
         }
     }
 
-    public function complete(Request $request, CropCycle $cropCycle): JsonResponse
+    public function complete(CompleteCropCycleRequest $request, CropCycle $cropCycle): JsonResponse
     {
-        $validated = $request->validate([
-            'yield_value' => 'nullable|numeric|min:0',
-            'yield_unit_id' => 'nullable|exists:units_of_measure,id',
-            'quality_rating' => 'nullable|in:excellent,good,average,below_average,poor',
-        ]);
+        $validated = $request->validated();
 
         try {
             $cropCycle->complete($validated);
@@ -164,11 +118,9 @@ class CropCycleController extends Controller
         }
     }
 
-    public function fail(Request $request, CropCycle $cropCycle): JsonResponse
+    public function fail(FailCropCycleRequest $request, CropCycle $cropCycle): JsonResponse
     {
-        $validated = $request->validate([
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         try {
             $cropCycle->fail($validated['notes'] ?? null);
@@ -180,11 +132,9 @@ class CropCycleController extends Controller
         }
     }
 
-    public function abandon(Request $request, CropCycle $cropCycle): JsonResponse
+    public function abandon(FailCropCycleRequest $request, CropCycle $cropCycle): JsonResponse
     {
-        $validated = $request->validate([
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         try {
             $cropCycle->abandon($validated['notes'] ?? null);

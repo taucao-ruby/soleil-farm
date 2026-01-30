@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Season\StoreSeasonRequest;
+use App\Http\Requests\Season\UpdateSeasonRequest;
 use App\Http\Resources\SeasonResource;
 use App\Models\Season;
 use Illuminate\Http\JsonResponse;
@@ -22,15 +24,9 @@ class SeasonController extends Controller
         return SeasonResource::collection($query->orderBy('year', 'desc')->get());
     }
 
-    public function store(Request $request): SeasonResource
+    public function store(StoreSeasonRequest $request): SeasonResource
     {
-        $validated = $request->validate([
-            'season_definition_id' => 'required|exists:season_definitions,id',
-            'year' => 'required|integer|min:2000|max:2100',
-            'actual_start_date' => 'nullable|date',
-            'actual_end_date' => 'nullable|date|after_or_equal:actual_start_date',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $season = Season::create($validated);
         $season->load('seasonDefinition');
@@ -45,15 +41,9 @@ class SeasonController extends Controller
         return new SeasonResource($season);
     }
 
-    public function update(Request $request, Season $season): SeasonResource
+    public function update(UpdateSeasonRequest $request, Season $season): SeasonResource
     {
-        $validated = $request->validate([
-            'season_definition_id' => 'sometimes|exists:season_definitions,id',
-            'year' => 'sometimes|integer|min:2000|max:2100',
-            'actual_start_date' => 'nullable|date',
-            'actual_end_date' => 'nullable|date|after_or_equal:actual_start_date',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $season->update($validated);
         $season->load('seasonDefinition');

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CropCycleStage\CompleteCropCycleStageRequest;
+use App\Http\Requests\CropCycleStage\StartCropCycleStageRequest;
+use App\Http\Requests\CropCycleStage\StoreCropCycleStageRequest;
+use App\Http\Requests\CropCycleStage\UpdateCropCycleStageRequest;
 use App\Http\Resources\CropCycleStageResource;
 use App\Models\CropCycle;
 use App\Models\CropCycleStage;
@@ -19,16 +23,9 @@ class CropCycleStageController extends Controller
         );
     }
 
-    public function store(Request $request, CropCycle $cropCycle): CropCycleStageResource
+    public function store(StoreCropCycleStageRequest $request, CropCycle $cropCycle): CropCycleStageResource
     {
-        $validated = $request->validate([
-            'stage_name' => 'required|string|max:100',
-            'sequence_order' => 'required|integer|min:1',
-            'planned_start_date' => 'nullable|date',
-            'planned_end_date' => 'nullable|date|after_or_equal:planned_start_date',
-            'notes' => 'nullable|string',
-        ]);
-
+        $validated = $request->validated();
         $validated['crop_cycle_id'] = $cropCycle->id;
 
         $stage = CropCycleStage::create($validated);
@@ -36,15 +33,9 @@ class CropCycleStageController extends Controller
         return new CropCycleStageResource($stage);
     }
 
-    public function update(Request $request, CropCycleStage $stage): CropCycleStageResource
+    public function update(UpdateCropCycleStageRequest $request, CropCycleStage $stage): CropCycleStageResource
     {
-        $validated = $request->validate([
-            'stage_name' => 'sometimes|string|max:100',
-            'sequence_order' => 'sometimes|integer|min:1',
-            'planned_start_date' => 'nullable|date',
-            'planned_end_date' => 'nullable|date|after_or_equal:planned_start_date',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $stage->update($validated);
 
@@ -55,19 +46,23 @@ class CropCycleStageController extends Controller
     {
         $stage->delete();
 
-        return response()->json(['message' => 'Stage deleted successfully.']);
+        return response()->json(['message' => 'Đã xóa giai đoạn thành công.']);
     }
 
-    public function start(CropCycleStage $stage): CropCycleStageResource
+    public function start(StartCropCycleStageRequest $request, CropCycleStage $stage): CropCycleStageResource
     {
-        $stage->start();
+        $validated = $request->validated();
+
+        $stage->start($validated['actual_start_date'] ?? null);
 
         return new CropCycleStageResource($stage);
     }
 
-    public function complete(CropCycleStage $stage): CropCycleStageResource
+    public function complete(CompleteCropCycleStageRequest $request, CropCycleStage $stage): CropCycleStageResource
     {
-        $stage->complete();
+        $validated = $request->validated();
+
+        $stage->complete($validated['actual_end_date'] ?? null);
 
         return new CropCycleStageResource($stage);
     }
